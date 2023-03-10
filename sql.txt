@@ -1,0 +1,93 @@
+-- Adminer 4.7.5 MySQL dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+DROP TABLE IF EXISTS `accomodation`;
+CREATE TABLE `accomodation` (
+  `acc_id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL,
+  `acc_description` longtext NOT NULL,
+  `acc_location` varchar(255) DEFAULT NULL,
+  `acc_price` int(11) DEFAULT NULL,
+  `acc_photo` text,
+  PRIMARY KEY (`acc_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `accomodation_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `accomodation` (`acc_id`, `user_id`, `acc_description`, `acc_location`, `acc_price`, `acc_photo`) VALUES
+(22,	5,	'fully tilesed, 120 sqf, air conditioned, attached bath',	'Dhanmondi',	600,	'uploads/DCIM_201912081700.jpg'),
+(23,	5,	'wooden floor, 140 sqf, 24/7 wifi, air conditioned, attach varanda',	'gulshan',	1000,	'uploads/DCIM_201912081703.jpg'),
+(24,	6,	'wooden floor, 140 sqf, air conditioned, attach varanda',	'Uttara',	800,	'uploads/DCIM_201912081722.jpg'),
+(25,	6,	'24/7 wifi, tilesed floor, attach bath',	'Bashundhora',	700,	'uploads/DCIM_201912081724.jpg');
+
+DROP TABLE IF EXISTS `acc_booking`;
+CREATE TABLE `acc_booking` (
+  `acc_booking_id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL,
+  `acc_id` int(10) NOT NULL,
+  PRIMARY KEY (`acc_booking_id`),
+  KEY `FKacc_bookin680169` (`user_id`),
+  KEY `FKacc_bookin150908` (`acc_id`),
+  CONSTRAINT `FKacc_bookin150908` FOREIGN KEY (`acc_id`) REFERENCES `accomodation` (`acc_id`),
+  CONSTRAINT `FKacc_bookin680169` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `bag`;
+CREATE TABLE `bag` (
+  `bag_id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) NOT NULL,
+  `bag_capacity` int(10) DEFAULT NULL,
+  `bag_Pick_Location` char(32) DEFAULT NULL,
+  `bag_Drop_Location` char(32) DEFAULT NULL,
+  `bag_description` longtext,
+  `bag_phone` int(11) NOT NULL,
+  `bag_photo` text,
+  `bag_Price` int(11) DEFAULT NULL,
+  PRIMARY KEY (`bag_id`),
+  KEY `user` (`user_id`),
+  CONSTRAINT `bag_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `bag` (`bag_id`, `user_id`, `bag_capacity`, `bag_Pick_Location`, `bag_Drop_Location`, `bag_description`, `bag_phone`, `bag_photo`, `bag_Price`) VALUES
+(11,	5,	4,	'Dhaka',	'Chittagong',	'Small fragile, needs to be maintained carefully!',	1999929095,	'uploads/DCIM_201912081707.jpg',	300),
+(12,	5,	5,	'NewYork',	'London',	'Medium sized luggage',	1999929095,	'uploads/DCIM_201912081711.jpg',	700),
+(13,	6,	4,	'London',	'Sylhet',	'Small bag  with some baby products !',	1521564637,	'uploads/DCIM_201912081729.jpg',	700);
+
+DROP TABLE IF EXISTS `payment`;
+CREATE TABLE `payment` (
+  `payment_id` int(10) NOT NULL AUTO_INCREMENT,
+  `payment_amount` int(10) DEFAULT NULL,
+  `payment_date` int(10) DEFAULT NULL,
+  `user_id` int(10) NOT NULL,
+  `acc_booking_id` int(10) NOT NULL,
+  `bag_booking_id` int(10) DEFAULT NULL,
+  PRIMARY KEY (`payment_id`),
+  KEY `FKPayment661639` (`acc_booking_id`),
+  KEY `FKPayment959878` (`bag_booking_id`),
+  KEY `FKPayment306010` (`user_id`),
+  CONSTRAINT `FKPayment306010` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
+  CONSTRAINT `FKPayment661639` FOREIGN KEY (`acc_booking_id`) REFERENCES `acc_booking` (`acc_booking_id`),
+  CONSTRAINT `FKPayment959878` FOREIGN KEY (`bag_booking_id`) REFERENCES `bag_booking` (`bag_booking_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user` (
+  `user_id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_name` char(32) DEFAULT NULL,
+  `user_email` char(32) NOT NULL,
+  `user_password` char(32) DEFAULT NULL,
+  `user_phone` varchar(32) DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `user` (`user_id`, `user_name`, `user_email`, `user_password`, `user_phone`) VALUES
+(5,	'nibir',	'nibirafsan@gmail.com',	'123456',	'01999929095'),
+(6,	'ishraq',	'ishraq@gmail.com',	'123456',	'01521564637');
+
+-- 2019-12-08 17:56:46
